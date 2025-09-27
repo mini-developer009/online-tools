@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Countdown Timer</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Segoe UI,Arial;background:linear-gradient(135deg,#667eea,#764ba2);min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:24px;color:#fff}
+  .top{width:100%;max-width:980px;display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+  a.home{color:#fff;text-decoration:none;padding:8px 12px;border-radius:8px;background:rgba(0,0,0,0.15)}
+  .card{width:100%;max-width:520px;background:rgba(255,255,255,0.12);backdrop-filter:blur(8px);padding:22px;border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.25)}
+  h1{font-size:22px;margin-bottom:12px}
+  .controls{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
+  input[type=number]{width:120px;padding:10px;border-radius:8px;border:none}
+  button{padding:10px 14px;border-radius:8px;border:none;cursor:pointer;background:#00c6ff;color:#042;font-weight:700}
+  button.ghost{background:transparent;border:2px solid rgba(255,255,255,0.15);color:#fff}
+  .display{font-size:40px;text-align:center;padding:14px;background:rgba(0,0,0,0.15);border-radius:10px;margin-bottom:10px}
+  small.note{display:block;margin-top:8px;color:rgba(255,255,255,0.85)}
+</style>
+</head>
+<body>
+  <div class="top">
+    <a href="index.html" class="home">&larr; Tools Home</a>
+    <div>Countdown Timer</div>
+  </div>
+
+  <div class="card">
+    <h1>Set countdown</h1>
+    <div class="controls">
+      <input id="hours" type="number" min="0" placeholder="Hours" />
+      <input id="minutes" type="number" min="0" placeholder="Minutes" />
+      <input id="seconds" type="number" min="0" placeholder="Seconds" />
+      <button id="setBtn">Set</button>
+    </div>
+
+    <div class="display" id="display">00:00:00</div>
+
+    <div style="display:flex;gap:8px;flex-wrap:wrap">
+      <button id="startBtn">Start</button>
+      <button id="pauseBtn" class="ghost">Pause</button>
+      <button id="resetBtn" class="ghost">Reset</button>
+    </div>
+    <small class="note">When the timer hits 0 an alert will show. You can edit values and press Set before starting.</small>
+  </div>
+
+<script>
+  const display = document.getElementById('display');
+  const hI = document.getElementById('hours');
+  const mI = document.getElementById('minutes');
+  const sI = document.getElementById('seconds');
+  let total = 0, timer = null;
+
+  function format(sec){
+    const h = Math.floor(sec/3600), m = Math.floor((sec%3600)/60), s = sec%60;
+    return [h,m,s].map(n=>String(n).padStart(2,'0')).join(':');
+  }
+
+  document.getElementById('setBtn').addEventListener('click', ()=> {
+    const h = parseInt(hI.value||0), m = parseInt(mI.value||0), s = parseInt(sI.value||0);
+    total = Math.max(0, h*3600 + m*60 + s);
+    display.textContent = format(total);
+  });
+
+  document.getElementById('startBtn').addEventListener('click', ()=>{
+    if(total<=0) return;
+    if(timer) return;
+    timer = setInterval(()=>{
+      total--;
+      display.textContent = format(total);
+      if(total<=0){ clearInterval(timer); timer=null; alert('Time is up!'); }
+    },1000);
+  });
+
+  document.getElementById('pauseBtn').addEventListener('click', ()=> {
+    if(timer){ clearInterval(timer); timer=null; }
+  });
+
+  document.getElementById('resetBtn').addEventListener('click', ()=> {
+    if(timer){ clearInterval(timer); timer=null; }
+    total = 0;
+    hI.value = mI.value = sI.value = '';
+    display.textContent = '00:00:00';
+  });
+</script>
+</body>
+</html>

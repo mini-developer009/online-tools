@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>JSON Formatter</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Segoe UI,Arial;background:linear-gradient(135deg,#43cea2,#185a9d);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;color:#fff}
+  .card{background:rgba(255,255,255,0.95);color:#222;padding:18px;border-radius:12px;max-width:1000px;width:100%}
+  textarea{width:100%;min-height:320px;padding:12px;border-radius:8px;border:1px solid #ddd;font-family:monospace;font-size:14px}
+  .row{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+  button{padding:8px 12px;border-radius:8px;border:none;background:#185a9d;color:#fff;cursor:pointer}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div style="display:flex;justify-content:space-between;align-items:center">
+      <a href="index.html" style="text-decoration:none;color:#185a9d">&larr; Tools Home</a>
+      <h2>JSON Formatter & Validator</h2>
+    </div>
+
+    <textarea id="input" placeholder='Paste JSON here'></textarea>
+
+    <div class="row">
+      <button onclick="formatJSON()">Format (Pretty)</button>
+      <button onclick="minifyJSON()">Minify</button>
+      <button onclick="validateJSON()">Validate</button>
+      <button onclick="copyOut()">Copy Output</button>
+      <button onclick="clearAll()">Clear</button>
+    </div>
+  </div>
+
+<script>
+  const input = document.getElementById('input');
+  function formatJSON(){
+    try{
+      const obj = JSON.parse(input.value);
+      input.value = JSON.stringify(obj, null, 2);
+    }catch(e){
+      alert('Invalid JSON: ' + e.message);
+    }
+  }
+  function minifyJSON(){
+    try{
+      const obj = JSON.parse(input.value);
+      input.value = JSON.stringify(obj);
+    }catch(e){
+      alert('Invalid JSON: ' + e.message);
+    }
+  }
+  function validateJSON(){
+    try{
+      JSON.parse(input.value);
+      alert('Valid JSON');
+    }catch(e){
+      alert('Invalid JSON: ' + e.message);
+    }
+  }
+  function copyOut(){ navigator.clipboard.writeText(input.value).then(()=> alert('Copied')); }
+  function clearAll(){ if(confirm('Clear text?')) input.value=''; }
+</script>
+</body>
+</html>

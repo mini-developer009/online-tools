@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Text Case Converter</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Segoe UI,Arial;background:linear-gradient(135deg,#f6d365,#fda085);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;color:#222}
+  .card{background:#fff;padding:18px;border-radius:12px;max-width:900px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.08)}
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  textarea{width:100%;min-height:180px;padding:12px;border-radius:8px;border:1px solid #ddd;font-size:15px}
+  .row{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px}
+  button{padding:10px 12px;border-radius:8px;border:none;background:#ff7a18;color:#fff;cursor:pointer}
+  button.secondary{background:#ddd;color:#333}
+</style>
+</head>
+<body>
+  <div class="card">
+    <div class="top">
+      <a href="index.html" style="text-decoration:none;color:#222">&larr; Tools Home</a>
+      <h2>Text Case Converter</h2>
+    </div>
+
+    <textarea id="input" placeholder="Paste or type text here..."></textarea>
+
+    <div class="row">
+      <button onclick="setCase('upper')">UPPERCASE</button>
+      <button onclick="setCase('lower')">lowercase</button>
+      <button onclick="setCase('title')">Title Case</button>
+      <button onclick="setCase('sentence')">Sentence case</button>
+      <button onclick="setCase('reverse')">Reverse Text</button>
+      <button onclick="setCase('trim')">Remove Extra Spaces</button>
+      <button class="secondary" onclick="copyText()">Copy</button>
+      <button class="secondary" onclick="clearText()">Clear</button>
+    </div>
+  </div>
+
+<script>
+  const input = document.getElementById('input');
+
+  function toTitle(s){ return s.toLowerCase().split(' ').map(w => w? w[0].toUpperCase()+w.slice(1):'').join(' '); }
+  function toSentence(s){
+    return s.toLowerCase().replace(/(^\s*\w|[\.!\?]\s*\w)/g, c => c.toUpperCase());
+  }
+
+  function setCase(mode){
+    let v = input.value;
+    if(!v) return;
+    switch(mode){
+      case 'upper': v = v.toUpperCase(); break;
+      case 'lower': v = v.toLowerCase(); break;
+      case 'title': v = toTitle(v); break;
+      case 'sentence': v = toSentence(v); break;
+      case 'reverse': v = v.split('').reverse().join(''); break;
+      case 'trim': v = v.replace(/\s+/g,' ').trim(); break;
+    }
+    input.value = v;
+  }
+
+  function copyText(){ navigator.clipboard.writeText(input.value).then(()=> alert('Copied!')); }
+  function clearText(){ if(confirm('Clear text?')) input.value=''; }
+</script>
+</body>
+</html>

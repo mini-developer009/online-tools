@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>QR Code Generator</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Segoe UI,Arial;background:linear-gradient(135deg,#4facfe,#00f2fe);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;color:#013}
+  .box{background:rgba(255,255,255,0.95);padding:18px;border-radius:12px;max-width:640px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.12)}
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  input[type=text]{width:100%;padding:10px;border-radius:8px;border:1px solid #ddd}
+  button{padding:10px 12px;border-radius:8px;border:none;background:#4facfe;color:#fff;cursor:pointer;margin-left:8px}
+  .out{margin-top:14px;text-align:center}
+  img.qr{max-width:260px;border-radius:8px;border:1px solid #eee}
+  .note{font-size:13px;color:#444;margin-top:8px}
+</style>
+</head>
+<body>
+  <div class="box">
+    <div class="top">
+      <a href="index.html" style="text-decoration:none;color:#013">&larr; Tools Home</a>
+      <h2>QR Code Generator</h2>
+    </div>
+
+    <div style="display:flex;gap:8px;align-items:center">
+      <input id="text" type="text" placeholder="Enter URL or text" />
+      <button id="gen">Generate</button>
+      <button id="download" style="display:none">Download</button>
+    </div>
+
+    <div class="out" id="out">
+      <!-- QR image appears here -->
+    </div>
+    <div class="note">This uses a public QR image service. If you prefer self-hosted JS QR generation, tell me and I'll provide an offline solution.</div>
+  </div>
+
+<script>
+  const text = document.getElementById('text'), gen = document.getElementById('gen'), out = document.getElementById('out'), dl = document.getElementById('download');
+
+  gen.addEventListener('click', ()=>{
+    const v = encodeURIComponent(text.value || 'https://mini-developer.com');
+    // using api.qrserver to generate an image
+    const url = `https://api.qrserver.com/v1/create-qr-code/?size=300x300&data=${v}`;
+    out.innerHTML = `<img class="qr" src="${url}" alt="QR">`;
+    dl.style.display = 'inline-block';
+    dl.onclick = ()=> {
+      const a = document.createElement('a'); a.href = url; a.download = 'qrcode.png'; a.click();
+    };
+  });
+</script>
+</body>
+</html>

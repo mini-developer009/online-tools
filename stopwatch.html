@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Stopwatch</title>
+  <style>
+    body{display:flex;justify-content:center;align-items:center;height:100vh;background:linear-gradient(135deg,#f093fb,#f5576c);font-family:Arial}
+    .stopwatch{background:#fff;padding:20px;border-radius:10px;text-align:center;box-shadow:0 5px 15px rgba(0,0,0,0.3)}
+    h1{margin-bottom:20px}
+    button{margin:5px;padding:10px 20px;border:none;border-radius:6px;cursor:pointer;background:#007bff;color:#fff}
+    button:hover{background:#0056b3}
+  </style>
+</head>
+<body>
+  <div class="stopwatch">
+    <h1 id="display">00:00:00</h1>
+    <button onclick="start()">Start</button>
+    <button onclick="stop()">Stop</button>
+    <button onclick="reset()">Reset</button>
+  </div>
+  <script>
+    let timer;let sec=0;
+    function update(){let h=Math.floor(sec/3600);let m=Math.floor((sec%3600)/60);let s=sec%60;
+      document.getElementById('display').innerText=`${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+    function start(){if(!timer){timer=setInterval(()=>{sec++;update();},1000);}}
+    function stop(){clearInterval(timer);timer=null;}
+    function reset(){stop();sec=0;update();}
+  </script>
+</body>
+</html>

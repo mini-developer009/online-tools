@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Color Picker</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:Segoe UI,Arial;background:linear-gradient(135deg,#11998e,#38ef7d);min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px;color:#013}
+  .wrap{background:rgba(255,255,255,0.9);padding:18px;border-radius:12px;max-width:640px;width:100%;box-shadow:0 10px 30px rgba(0,0,0,0.12)}
+  .top{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
+  a.home{font-size:14px;text-decoration:none;color:#013}
+  .pickerRow{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+  input[type=color]{width:80px;height:52px;border:none;padding:0;border-radius:8px}
+  input[type=text]{flex:1;padding:10px;border-radius:8px;border:1px solid #ddd}
+  button{padding:10px 12px;border-radius:8px;border:none;background:#11998e;color:#fff;cursor:pointer}
+  .preview{height:120px;border-radius:10px;margin-top:12px;border:1px solid #ddd}
+  .codes{display:flex;gap:8px;margin-top:12px;flex-wrap:wrap}
+  .codeBox{background:#f7f7f7;padding:8px;border-radius:8px;font-family:monospace}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="top">
+      <a href="index.html" class="home">&larr; Tools Home</a>
+      <h2>Color Picker</h2>
+    </div>
+
+    <div class="pickerRow">
+      <input type="color" id="color" value="#00aaff">
+      <input type="text" id="hex" value="#00aaff">
+      <button id="copyBtn">Copy HEX</button>
+    </div>
+
+    <div class="preview" id="preview"></div>
+
+    <div class="codes">
+      <div class="codeBox" id="hexOut">HEX: #00aaff</div>
+      <div class="codeBox" id="rgbOut">RGB: rgb(0,170,255)</div>
+      <div class="codeBox" id="hslOut">HSL: hsl(195,100%,50%)</div>
+    </div>
+  </div>
+
+<script>
+  const color = document.getElementById('color'), hex = document.getElementById('hex'), preview = document.getElementById('preview');
+  const hexOut = document.getElementById('hexOut'), rgbOut = document.getElementById('rgbOut'), hslOut = document.getElementById('hslOut');
+  const copyBtn = document.getElementById('copyBtn');
+
+  function hexToRgb(h){ const parsed = h.replace('#',''); const r=parseInt(parsed.slice(0,2),16); const g=parseInt(parsed.slice(2,4),16); const b=parseInt(parsed.slice(4,6),16); return [r,g,b]; }
+  function rgbToHsl(r,g,b){
+    r/=255;g/=255;b/=255;
+    const max=Math.max(r,g,b),min=Math.min(r,g,b);
+    let h,s,l=(max+min)/2;
+    if(max==min) h=s=0;
+    else {
+      const d = max-min;
+      s = l>0.5?d/(2-max-min):d/(max+min);
+      switch(max){
+        case r: h = (g-b)/d + (g<b?6:0); break;
+        case g: h = (b-r)/d + 2; break;
+        case b: h = (r-g)/d + 4; break;
+      }
+      h /= 6;
+    }
+    return [Math.round(h*360),Math.round(s*100),Math.round(l*100)];
+  }
+
+  function updateFromHex(h){
+    if(!/^#?[0-9A-Fa-f]{6}$/.test(h)) return;
+    if(!h.startsWith('#')) h = '#'+h;
+    color.value = h;
+    hex.value = h;
+    preview.style.background = h;
+    hexOut.textContent = 'HEX: ' + h;
+    const [r,g,b] = hexToRgb(h);
+    rgbOut.textContent = `RGB: rgb(${r}, ${g}, ${b})`;
+    const [hh,ss,ll] = rgbToHsl(r,g,b);
+    hslOut.textContent = `HSL: hsl(${hh}, ${ss}%, ${ll}%)`;
+  }
+
+  color.addEventListener('input', ()=> updateFromHex(color.value));
+  hex.addEventListener('change', ()=> updateFromHex(hex.value.trim()));
+  copyBtn.addEventListener('click', ()=> {
+    navigator.clipboard.writeText(hex.value).then(()=> copyBtn.textContent='Copied!').finally(()=> setTimeout(()=>copyBtn.textContent='Copy HEX',1000));
+  });
+
+  updateFromHex(color.value);
+</script>
+</body>
+</html>
